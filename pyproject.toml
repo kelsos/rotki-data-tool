@@ -1,0 +1,146 @@
+# -- Mypy config section --
+
+[tool.mypy]
+# Docs: https://mypy.readthedocs.io/en/latest/config_file.html
+ignore_missing_imports = true
+check_untyped_defs = true
+disallow_untyped_defs = true
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_unreachable = true
+warn_redundant_casts = true
+disallow_untyped_decorators = true
+disallow_untyped_calls = true
+mypy_path="./stubs/"
+
+[[tool.mypy.overrides]]
+module = "rotkehlchen.*"
+
+# -- ruff config section --
+
+[tool.ruff]
+line-length = 99
+
+select = [
+    "E",
+    "F",
+    "W",
+    "C",
+    # "I",  # isort -- not using since does not play well with running isort too
+    # "D",  # pydocstule -- too many docstuff we don't use
+    "N",
+    "B",
+    "G",
+    # "EM",  #  our exceptions use f strings everywhere. Very little upside to this and I don't think it's cleaner code
+    "ISC",
+    "ICN",
+    "T",
+    "UP",
+    "YTT",
+    # "ANN",  # flake8-annotations -- looks like mypy already covers this?
+    "S",
+    # "BLE",  # blind-except -- already pylint does this and we got ignores where needed
+    # "FBT",  # FBT -- not sure I agree with the concept of boolean trap
+    # "A",  # flake8-builtins -- we got some shadowed builtins. Should probably fix this
+    # "Q",  # flake8-quotes -- does not seem to be configurable for us
+    "ERA",
+    "PGH",
+    "RUF",
+    "RET",
+    "SIM",
+    # "TID",  # tidy-imports -- we use relative imports from parent in some cases. Maybe stop?
+    # "ARG",  # flake8-unused-arguments -- pylint already does this and we got ignores where needed
+    "PL",  # all pylint rules
+    "PIE",
+    "COM",
+    "DTZ",
+    "EXE",
+    "INP",
+    "PT",
+    # "TCH",  # Should do it at some point. Too many hits and no autofix. When enabled fully, remove from extend-select
+    # "PTH",  # Should do it at some point. Many hits and no autofix. When enabled fully remove from extend-select
+    "TRY",
+    # "RUF",  # ruff specific rules, we enable only those we need below
+]
+extend-select = [
+    "Q002",   # Single quote docstring found but double quotes preferred
+    "Q003",   # Change outer quotes to avoid escaping inner quotes
+    "TCH004", # Move import out of type-checking block. Used for more than type hinting.
+    "TCH005", # Found empty type-checking block
+    # Some pathlib enforcement rules follow
+    "PTH108",
+    "PTH109",
+]
+ignore = [
+    "E402",  # module level import at file top. https://www.flake8rules.com/rules/E402.html
+    "N818",  # error suffix in exception names
+    "C901",  # function too complex
+    "RUF001",  # AmbiguousUnicodeCharacterString
+    "RUF002",  # AmbiguousUnicodeCharacterDocstring
+    "RUF005",  # Unpacking over concatenation -> https://github.com/charliermarsh/ruff/issues/2054#issuecomment-1399617413
+    "RET501",  # Explicitly returning None
+    "RET504",  # Unnecessary variable assignment before `return
+    "RET505",  # https://github.com/charliermarsh/ruff/issues/1035
+    "RET506",  # https://github.com/charliermarsh/ruff/issues/1035
+    "RET507",  # https://github.com/charliermarsh/ruff/issues/1035
+    "RET508",  # https://github.com/charliermarsh/ruff/issues/1035
+    "PGH003",  # we do use blanket type: ignore. Perhaps can fix in the future
+    "SIM108",  # we do use ternary operator when it makes sense. But forcing it everywhere makes the code unreadable.
+    "PLR2004", # we try to use constant vars where possile but this complains abouttoo many things
+    # Some bandit rules we don't check for
+    "S101",  # asserts are fine
+    "S103",  # permissive mask on file/directory
+    "S105",  # hard coded password checks got false positives
+    "S106",  # hard coded password checks got false positives
+    "S324",  # insecure hash function. We use it for image md5 for etag. TODO: Change and enable?
+    "G004",  # Our logs do use f-strings everywhere at least for now
+    # Some pytest-styles rules we don't check for
+    "PT011", # pytest.raises() too broad is fine, since there is functions that raise ValueError
+    "PT018", # composite assertions are fine
+    "TRY003",  # long messages outside the exception class. Perhaps enable when we do internationalization and need to put messages in class logic?
+    "TRY004",  # Prefer TypeError for wrong type. May be okay but would need to invetigate all usages of suggested changes
+    "TRY301",  # Abstract raise to an inner function -- not sure what this? Use exception for control flow?
+    "TRY400",  # loggin.exception instead of logging.error. Not sure I understood this one
+]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+target-version = "py39"
+
+[tool.ruff.per-file-ignores]
+"tool.py" = ["INP001"]  # no need for __init__ here
+
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+
+# -- isort config section --
+
+[tool.isort]
+line_length = 99
+known_future_library = "future"
+multi_line_output = "3"
+include_trailing_comma = "1"
+default_section = "THIRDPARTY"
+combine_as_imports = "1"
