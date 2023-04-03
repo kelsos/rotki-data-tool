@@ -172,8 +172,14 @@ def new_user(username: str, password: str) -> None:
         ),
     )
 
-    with data_handler.db.conn.write_ctx() as write_cursor:
-        populate_rpc_nodes_in_database(write_cursor)
+    with (
+        data_handler.db.conn.write_ctx() as write_cursor,
+        GlobalDBHandler().conn.read_ctx() as cursor,
+    ):
+        populate_rpc_nodes_in_database(
+            db_write_cursor=write_cursor,
+            globaldb_cursor=cursor,
+        )
 
     api_key = os.environ.get('ROTKI_API_KEY')
     api_secret = os.environ.get('ROTKI_API_SECRET')
