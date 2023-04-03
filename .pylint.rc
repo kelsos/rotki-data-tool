@@ -4,7 +4,7 @@ persistent=yes
 suggestion-mode=yes
 unsafe-load-any-extension=no
 init-hook="import sys; sys.path.append('.')"
-load-plugins=tools.pylint.log_checker,tools.pylint.not_checker
+load-plugins=tools.pylint.log_checker,tools.pylint.not_checker,pylint.extensions.comparison_placement, pylint.extensions.consider_refactoring_into_while_condition
 
 # Blacklist files or directories (basenames, not paths)
 ignore=
@@ -14,7 +14,7 @@ ignore-patterns=
 
 [EXCEPTIONS]
 
-overgeneral-exceptions=Exception
+overgeneral-exceptions=builtins.Exception
 
 [BASIC]
 
@@ -54,18 +54,25 @@ logging-modules=logging
 #    attribute-defined-outside-init,
 #    wildcard-import,
 #    wrong-import-order,
-#    abstract-method
+#    abstract-method,
+#    wrong-import-position,  # handled by isort
+#    missing-module-docstring,  # maybe activate in future?
+#    missing-class-docstring,  # maybe activate in future?
+#    too-many-arguments,  # we don't conform to certain number
+#    line-too-long,  # already checked by others
+#    missing-timeout,  # we already check this via ruff S113. But we skip all test files
+#    use-implicit-booleaness-not-comparison  # we don't use implitic booleaness in the code
 
 # When wanting to discover new things to check for comment the following line and uncomment above
 disable=all
 enable=
+    unnecessary-ellipsis,
     no-value-for-parameter,
     too-many-format-args,
     no-member,
     bad-except-order,
     redefined-builtin,
     unused-variable,
-    no-self-use,
     import-self,
     useless-object-inheritance,
     unused-argument,
@@ -77,7 +84,7 @@ enable=
     reimported,
     too-many-function-args,
     no-else-raise,
-    no-else-return,
+#     no-else-return,  # https://github.com/PyCQA/pylint/issues/8155
     raise-missing-from,
     useless-return,
     consider-iterating-dictionary,
@@ -114,6 +121,16 @@ enable=
     duplicate-string-formatting-argument,
     misplaced-comparison-constant,
     unidiomatic-typecheck,
+    pointless-exception-statement,
+    shadowed-import,
+    unbalanced-dict-unpacking,
+    positional-only-arguments-expected,
+    named-expr-without-context,
+    invalid-slice-step,
+    consider-refactoring-into-while-condition,
+    consider-using-dict-items,
+    comparison-with-itself,
+    unnecessary-comprehension,
     rotki-lognokwargs,
     rotki-nonbooleannot
 
@@ -128,7 +145,6 @@ expected-line-ending-format=LF
 ignore-long-lines=^\s*(# )?<?https?://\S+>?$
 max-line-length=100
 max-module-lines=1000
-no-space-check=trailing-comma
 
 [VARIABLES]
 
