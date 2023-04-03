@@ -140,7 +140,13 @@ def new_user(username: str, password: str) -> None:
     """Creates a new user with the specified username and password
     and initializes api keys with the values from the .env file
     """
-    data_dir = data_directory(dev=True)
+    data_dir = data_directory(dev=False)
+    user_data = data_dir.joinpath(username)
+
+    if user_data.exists():
+        logger.info(f'{user_data} already exists')
+        sys.exit(1)
+
     vm_instructions = 500
     GlobalDBHandler(
         data_dir=data_dir,
@@ -199,6 +205,19 @@ def new_user(username: str, password: str) -> None:
     )
 
     data_handler.logout()
+
+    dev_data_dir = data_directory(dev=True)
+    dev_user_data = dev_data_dir.joinpath(username)
+
+    if dev_user_data.exists():
+        logger.info(f'removing existing {dev_user_data}')
+        shutil.rmtree(dev_user_data)
+
+    logger.info(f'copying {user_data} to {dev_user_data}')
+    shutil.copytree(user_data, dev_user_data)
+
+    logger.info(f'removing previously created user account {user_data}')
+    shutil.rmtree(user_data)
 
 
 @click.command()
