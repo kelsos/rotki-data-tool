@@ -18,5 +18,15 @@ To see what the utility can do run the following.
 ./tool --help
 ```
 
+## Building
+
+In order to build a single binary out of the tool you can do the following:
+
+```bash
+pyinstaller tool.spec
+```
+
+This will create a `account-sync` executable file in the `dist` directory that you can then use directly.
+
 ## License
 [GPLv3](License.md)

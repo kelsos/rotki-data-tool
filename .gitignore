@@ -5,3 +5,5 @@
 .venv
 backups
 *.egg-info
+dist
+build
