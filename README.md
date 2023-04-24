@@ -15,7 +15,7 @@ pip install -r requirements.txt
 To see what the utility can do run the following.
 
 ```bash
-./tool --help
+./tool.py --help
 ```
 
 ## Building
