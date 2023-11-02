@@ -170,6 +170,7 @@ def new_user(username: str, password: str) -> None:
             premium_should_sync=False,
             submit_usage_analytics=False,
         ),
+        resume_from_backup=False,
     )
 
     with (
